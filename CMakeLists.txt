@@ -32,4 +32,4 @@ add_executable(${PROJECT_NAME} deps/glad/src/glad.c ${HEADER_FILES} ${SOURCE_FIL
 
 target_link_libraries(${PROJECT_NAME} glfw)
 
-file(COPY assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+target_compile_definitions(${PROJECT_NAME} PUBLIC ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets/")

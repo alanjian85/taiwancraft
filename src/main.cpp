@@ -16,7 +16,7 @@ int main()
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
 
-	Shader::loadShader("triangle", "assets/shaders/triangle.vert", "assets/shaders/triangle.frag");
+	Shader::loadShader("triangle", ASSETS_DIR"shaders/triangle.vert", ASSETS_DIR"shaders/triangle.frag");
 
 	const GLfloat triangleVertices[] = {
 	//	position	   color
