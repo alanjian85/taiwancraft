@@ -1,2 +1,2 @@
-# taiwancraft
-A voxel based game inspired by Mojang Minecraft and written in C/C++ and OpenGL 4.1
+# taiwancraft - Minecraft made in Taiwan
+A voxel based game inspired by Minecraft and written in C++ 11 and OpenGL 4.1
