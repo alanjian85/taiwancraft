@@ -15,6 +15,10 @@ include_directories(deps/glfw/include
 
 add_subdirectory(deps/glfw)
 
-add_executable(taiwancraft deps/glad/src/glad.c src/main.cpp)
+add_executable(taiwancraft deps/glad/src/glad.c
+						   deps/impl.cpp
+						   src/main.cpp)
 
 target_link_libraries(taiwancraft glfw)
+
+file(COPY assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
