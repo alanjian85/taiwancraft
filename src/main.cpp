@@ -10,6 +10,12 @@ int main()
 	GLFWwindow *window = glfwCreateWindow(800, 600, "Test", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	while (!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
+		glClear(GL_COLOR_BUFFER_BIT);
+		glfwSwapBuffers(window);
+	}
 	glfwTerminate();
 	return 0;
 }
