@@ -11,8 +11,8 @@
 
 class Shader {
 public:
-	static void loadShader(const char* name, const char* vertFile, const char* fragFile, const char* geomeFilePath = nullptr);
-	static Shader& getShader(const char* name);
+	static void loadShader(std::string name, std::string vertFile, std::string fragFile, std::string geomeFilePath = "");
+	static Shader& getShader(std::string name);
 
 	static std::unordered_map<std::string, Shader> Shaders;
 public:

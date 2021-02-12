@@ -23,7 +23,12 @@ file(GLOB_RECURSE HEADER_FILES
 	${CMAKE_SOURCE_DIR}/src/*.h
 	${CMAKE_SOURCE_DIR}/src/*.hpp)
 
-add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+file(GLOB_RECURSE SHADER_FILES
+	${CMAKE_SOURCE_DIR}/assets/shaders/*.vert
+	${CMAKE_SOURCE_DIR}/assets/shaders/*.frag
+	${CMAKE_SOURCE_DIR}/assets/shaders/*.geom)
+
+add_executable(${PROJECT_NAME} deps/glad/src/glad.c ${HEADER_FILES} ${SOURCE_FILES} ${SHADER_FILES})
 
 target_link_libraries(${PROJECT_NAME} glfw)
 

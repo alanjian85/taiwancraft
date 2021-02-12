@@ -6,9 +6,9 @@
 
 std::unordered_map<std::string, Shader> Shader::Shaders;
 
-void Shader::loadShader(const char* name, const char* vertFilePath, const char* fragFilePath, const char* geomeFilePath)
+void Shader::loadShader(std::string name, std::string vertFilePath, std::string fragFilePath, std::string geomFilePath)
 {
-	std::string vertCode, fragCode, geomeCode;
+	std::string vertCode, fragCode, geomCode;
 	try
 	{
 		std::ifstream vertexFile(vertFilePath);
@@ -24,12 +24,12 @@ void Shader::loadShader(const char* name, const char* vertFilePath, const char* 
 		vertCode = vShaderStream.str();
 		fragCode = fShaderStream.str();
 
-		if (geomeFilePath != nullptr)
+		if (!geomFilePath.empty())
 		{
-			std::ifstream geometryFile(geomeFilePath);
-			gShaderStream << geometryFile.rdbuf();
-			geometryFile.close();
-			geomeCode = gShaderStream.str();
+			std::ifstream geomtryFile(geomFilePath);
+			gShaderStream << geomtryFile.rdbuf();
+			geomtryFile.close();
+			geomCode = gShaderStream.str();
 		}
 	}
 	catch (std::exception e)
@@ -38,11 +38,11 @@ void Shader::loadShader(const char* name, const char* vertFilePath, const char* 
 	}
 
 	Shader shader;
-	shader.compile(vertCode.c_str(), fragCode.c_str(), geomeCode.c_str());
+	shader.compile(vertCode.c_str(), fragCode.c_str(), geomCode.empty() ? nullptr : geomCode.c_str());
 	Shaders[name] = shader;
 }
 
-Shader& Shader::getShader(const char* name)
+Shader& Shader::getShader(std::string name)
 {
 	return Shader::Shaders[name];
 }
@@ -57,9 +57,9 @@ void Shader::unBind() const
 	glUseProgram(0);
 }
 
-void Shader::compile(const char* vertexCode, const char* fragmentCode, const char* geometryCode)
+void Shader::compile(const char* vertexCode, const char* fragmentCode, const char* geomtryCode)
 {
-	unsigned int sVertex, sFragment, sGeometry;
+	unsigned int sVertex, sFragment, sgeomtry;
 
 	sVertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(sVertex, 1, &vertexCode, NULL);
@@ -71,12 +71,12 @@ void Shader::compile(const char* vertexCode, const char* fragmentCode, const cha
 	glCompileShader(sFragment);
 	checkCompileError(sFragment, "FRAGMENT");
 
-	if (geometryCode != nullptr)
+	if (geomtryCode != nullptr)
 	{
-		sGeometry = glCreateShader(GL_GEOMETRY_SHADER);
-		glShaderSource(sGeometry, 1, &geometryCode, NULL);
-		glCompileShader(sGeometry);
-		checkCompileError(sGeometry, "GEOMETRY");
+		sgeomtry = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(sgeomtry, 1, &geomtryCode, NULL);
+		glCompileShader(sgeomtry);
+		checkCompileError(sgeomtry, "geomTRY");
 	}
 
 	this->m_Id = glCreateProgram();
