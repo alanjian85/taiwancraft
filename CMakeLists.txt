@@ -15,10 +15,16 @@ include_directories(deps/glfw/include
 
 add_subdirectory(deps/glfw)
 
-add_executable(taiwancraft deps/glad/src/glad.c
-						   deps/impl.cpp
-						   src/main.cpp)
+file(GLOB_RECURSE SOURCE_FILES 
+	${CMAKE_SOURCE_DIR}/src/*.c
+	${CMAKE_SOURCE_DIR}/src/*.cpp)
+	
+file(GLOB_RECURSE HEADER_FILES 
+	${CMAKE_SOURCE_DIR}/src/*.h
+	${CMAKE_SOURCE_DIR}/src/*.hpp)
 
-target_link_libraries(taiwancraft glfw)
+add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
+
+target_link_libraries(${PROJECT_NAME} glfw)
 
 file(COPY assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
