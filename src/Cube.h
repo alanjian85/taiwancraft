@@ -2,12 +2,14 @@
 #define CUBE_H
 
 #include "Drawable.h"
+#include "Buffers.h"
+#include "VertexArray.h"
 
 class Cube : public Drawable {
 public:
 	Cube() : Drawable()
 	{
-		const GLfloat vertices[] = {
+		float vertices[] = {
 		//	positions			   normal				//uv
 			//front
             -0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  1.0f,  0.0f, 1.0f,
@@ -66,12 +68,29 @@ public:
 			20, 21, 22,
 			22, 21, 23
 		};
-
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 		
-		m_NumIndex = 36;
+		VertexArray vertexArray;
+		BufferObject vertexBuffer(GL_ARRAY_BUFFER, vertices, sizeof(vertices));
+		//BufferObject indexBuffer(GL_ELEMENT_ARRAY_BUFFER, indices, sizeof(indices));
+
+		VertexBufferLayout layout;
+
+		// in vertices 
+		// |       position   |  |      normal      | |   uv     |
+		// -0.5f,  0.5f,  0.5f,   0.0f,  0.0f,  1.0f,  0.0f, 1.0f,
+		//          3 float              3 float          2 float
+		layout.push<float>(3); // position
+		layout.push<float>(3); // normal
+		layout.push<float>(2); // uv
+
+		//vertexArray.addBuffer(vertexBuffer, indexBuffer, layout);
+
+		// Draw
+		vertexArray.bind();
+		//indexBuffer.bind();
+
+
+		m_NumIndex = sizeof(indices) / sizeof(GLuint);
 	}
 };
 
