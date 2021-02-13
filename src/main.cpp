@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Player.h"
 #include "Time.h"
+#include "Cube.h"
 
 static int screenWidth = 800, screenHeight = 600;
 static Player player(glm::vec3(0.0f, 0.0f, 3.0f), 2.5f, 0.1f, screenWidth, screenHeight);
@@ -34,28 +35,10 @@ int main()
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
 
-	Shader::loadShader("triangle", ASSETS_DIR"shaders/triangle.vert", ASSETS_DIR"shaders/triangle.frag");
+	glEnable(GL_DEPTH_TEST);
 
-	const GLfloat triangleVertices[] = {
-	//	position	   color
-		-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-		 0.0f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f
-	};
-
-	GLuint vao, vbo;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, reinterpret_cast<void*>(sizeof(GLfloat) * 0));
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 6, reinterpret_cast<void*>(sizeof(GLfloat) * 3));
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
+	Shader::loadShader("cube", ASSETS_DIR"shaders/cube.vert", ASSETS_DIR"shaders/cube.frag");
+	Drawable::addDrawable<Cube>("cube");
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	
@@ -65,13 +48,12 @@ int main()
 
 		handleFrameEvent(window);
 
-		Shader::getShader("triangle").set("cameraMatrix", player.getCameraMatrix());
+		Shader::getShader("cube").set("cameraMatrix", player.getCameraMatrix());
 
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glBindVertexArray(vao);
-		Shader::getShader("triangle").bind();
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		Shader::getShader("cube").bind();
+		Drawable::getDrawable("cube").render();
 		
 		glfwSwapBuffers(window);
 	}
