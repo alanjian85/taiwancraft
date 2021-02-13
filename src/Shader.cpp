@@ -52,11 +52,6 @@ void Shader::bind() const
 	glUseProgram(this->m_Id);
 }
 
-void Shader::unBind() const
-{
-	glUseProgram(0);
-}
-
 void Shader::compile(const char* vertexCode, const char* fragmentCode, const char* geomtryCode)
 {
 	unsigned int sVertex, sFragment, sgeomtry;
@@ -76,7 +71,7 @@ void Shader::compile(const char* vertexCode, const char* fragmentCode, const cha
 		sgeomtry = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(sgeomtry, 1, &geomtryCode, NULL);
 		glCompileShader(sgeomtry);
-		checkCompileError(sgeomtry, "geomTRY");
+		checkCompileError(sgeomtry, "GEOMETRY");
 	}
 
 	this->m_Id = glCreateProgram();

@@ -15,17 +15,18 @@ public:
 	static Shader& getShader(std::string name);
 
 	static std::unordered_map<std::string, Shader> Shaders;
-public:
-	void bind() const;
-	void unBind() const;
-	void compile(const char* vertexCode, const char* fragmentCode, const char* geometryCode = nullptr);
 
 private:
 	GLuint m_Id;
+	std::unordered_map<std::string, GLuint> m_UniformLocationCache;
+
+public:
+	void bind() const;
+
+private:
 	void checkCompileError(unsigned int object, std::string type);
 	GLuint getUniformLocation(std::string name);
-
-	std::unordered_map<std::string, GLuint> m_UniformLocationCache;
+	void compile(const char* vertexCode, const char* fragmentCode, const char* geometryCode = nullptr);
 };
 
 #endif
