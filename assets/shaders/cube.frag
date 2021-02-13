@@ -5,7 +5,9 @@ in vec2 uv;
 
 out vec4 fragColor;
 
+uniform sampler2D dirt;
+
 void main()
 {
-	fragColor = vec4((normal + 1.0f) / 2.0f, 0.0f);
+	fragColor = texture(dirt, uv);
 }

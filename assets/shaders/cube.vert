@@ -7,11 +7,11 @@ layout(location = 2) in vec2 aUv;
 out vec3 normal;
 out vec2 uv;
 
-uniform mat4 cameraMatrix;
+uniform mat4 cameraMatrix, modelMatrix;
 
 void main()
 {
-	gl_Position = cameraMatrix * vec4(aPos, 1.0f);
+	gl_Position = cameraMatrix * modelMatrix * vec4(aPos, 1.0f);
 	normal = aNormal;
 	uv = aUv;
 }

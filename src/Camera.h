@@ -19,9 +19,9 @@ public:
 	Camera& setYaw(float yaw) { m_Yaw = yaw; return *this; }
 	Camera& setPitch(float pitch) { m_Pitch = pitch; return *this; }
 	Camera& setRoll(float roll) { m_Roll = roll; return *this; }
-	Camera& setFov(float fov) { m_Fov = fov; }
-	Camera& setScreenWidth(int screnWidth) { m_ScreenWidth = m_ScreenWidth; }
-	Camera& setScreenHeight(int screnHeight) { m_ScreenHeight = m_ScreenHeight; }
+	Camera& setFov(float fov) { m_Fov = fov; return *this; }
+	Camera& setScreenWidth(int screnWidth) { m_ScreenWidth = m_ScreenWidth; return *this; }
+	Camera& setScreenHeight(int screnHeight) { m_ScreenHeight = m_ScreenHeight; return *this; }
 
 	float getYaw() const { return m_Yaw; }
 	float getPitch() const { return m_Pitch; }

@@ -25,6 +25,11 @@ public:
 			m_Camera.setPosition(m_Camera.getPosition() - glm::normalize(glm::cross(m_Camera.getDirection(), m_Camera.getUpDir())) * m_MoveSpeed * Time::getFrameTime());
 	}
 
+	void onResizeEvent(int width, int height)
+	{
+		m_Camera.setScreenWidth(width).setScreenHeight(height);
+	}
+
 	void onCursorMove(int xpos, int ypos)
 	{
 		static int lastx = xpos, lasty = ypos;
