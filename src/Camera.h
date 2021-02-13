@@ -40,7 +40,7 @@ public:
 	glm::vec3 getUpDir() const
 	{
 		return glm::vec3(-glm::sin(glm::radians(m_Roll)), glm::cos(glm::radians(m_Roll)), 0.0f);
-	}
+	}	
 
 	glm::mat4 getCameraMatrix()
 	{

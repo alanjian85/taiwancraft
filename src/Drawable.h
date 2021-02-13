@@ -1,6 +1,8 @@
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
+#include "Buffers.h"
+
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
@@ -16,6 +18,7 @@ struct Vertex {
 class Drawable {
 protected:
 	GLuint m_Vao, m_Vbo, m_Ebo;
+	
 	GLsizei m_NumIndex;
 private:
 	static std::unordered_map<std::string, Drawable*> drawables;

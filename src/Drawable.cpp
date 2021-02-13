@@ -1,5 +1,6 @@
 #include "Drawable.h"
 
+
 std::unordered_map<std::string, Drawable*> Drawable::drawables;
 
 Drawable::Drawable()
