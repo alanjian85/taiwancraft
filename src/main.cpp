@@ -6,10 +6,10 @@
 #include "Player.h"
 #include "Time.h"
 #include "Cube.h"
-#include "Texture2D.h"
+#include "Texture.h"
 
 static int screenWidth = 800, screenHeight = 600;
-static Player player(glm::vec3(0.0f, 0.0f, 3.0f), 2.5f, 0.1f, screenWidth, screenHeight);
+static Player player(glm::vec3(0.0f, 0.0f, 3.0f), 5.0f, 0.1f, screenWidth, screenHeight);
 
 void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 {
@@ -44,6 +44,7 @@ int main()
 	gladLoadGL();
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	Shader::loadShader("cube", ASSETS_DIR"shaders/cube.vert", ASSETS_DIR"shaders/cube.frag");
 	Drawable::addDrawable<Cube>("cube");
@@ -64,8 +65,15 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		Shader::getShader("cube").bind();
-		Drawable::getDrawable("cube").render();
-		
+		for (int i = 0; i < 16; ++i) 
+			for (int j = 0; j < 10; ++j)
+				for (int k = 0; k < 16; ++k) {
+					glm::mat4 modelMatrix(1.0f);
+					modelMatrix = glm::translate(modelMatrix, glm::vec3(float(i), float(j), float(k)));
+					Shader::getShader("cube").set("modelMatrix", modelMatrix);
+					Drawable::getDrawable("cube").render();
+				}
+
 		glfwSwapBuffers(window);
 	}
 	

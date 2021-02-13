@@ -48,23 +48,23 @@ public:
 
 		const GLuint indices[] = {
 			//front
-			 0,  1,  2,
-			 1,  2,  3,
+			 2,  0,  1,
+			 3,  2,  1,
 			//back 
-			 4,  5,  6,
-			 5,  6,  7,
+			 6,  5,  4,
+			 7,  5,  6,
 			//right
-			 8,  9, 10,
-			 9, 10, 11,
+			10,  8, 9,
+			11, 10, 9,
 			//left
-			12, 13, 14,
-			13, 14, 15,
+			14, 13, 12,
+			15, 13, 14,
 			//up
-			16, 17, 18,
+			17, 16, 18,
 			17, 18, 19,
 			//bottom
 			20, 21, 22,
-			21, 22, 23
+			22, 21, 23
 		};
 
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
