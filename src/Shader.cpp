@@ -112,7 +112,7 @@ void Shader::checkCompileError(unsigned int object, std::string type)
 	}
 }
 
-GLuint Shader::getUniformLocation(std::string name)
+GLuint Shader::getUniformLocation(std::string name) const
 {
 	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 		return m_UniformLocationCache[name];
