@@ -1,82 +1,72 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
+#include <glm/glm.hpp>
 
 #include "Shader.h"
-#include "Player.h"
-#include "Time.h"
-#include "Cube.h"
-#include "Texture.h"
+#include "Camera.h"
 
-static int screenWidth = 800, screenHeight = 600;
-static Player player(glm::vec3(0.0f, 0.0f, 3.0f), 5.0f, 0.1f, screenWidth, screenHeight);
+#define SHADERS_DIR ASSETS_DIR"shaders/"
 
-void cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
-{
-	player.onCursorMove(int(xpos), int(ypos));
+static Camera camera(glm::vec3(0.0f, 0.0f, 3.0f), -90.0f, 0.0f, 0.0f, 45.0f, 800, 600, 0.1f, 100.0f);
+
+void cursorCallback(GLFWwindow* window, double xpos, double ypos) {
+	const float CAMERA_SENSITIVITY = 0.1f;
+	
+	static double lastx = xpos, lasty = ypos;
+	
+	double deltax = xpos - lastx, deltay = lasty - ypos;
+
+	camera.setYaw(camera.getYaw() + float(deltax) * CAMERA_SENSITIVITY)
+		  .setPitch(camera.getPitch() + float(deltay) * CAMERA_SENSITIVITY);
+
+	lastx = xpos; lasty = ypos;
+
+	camera.setPitch(glm::clamp(camera.getPitch(), -89.0f, 89.0f));
 }
 
-void handleFrameEvent(GLFWwindow* window)
-{
-	player.onFrameEvent(window);
-}
-
-void resizeEvent(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-	player.onResizeEvent(width, height);
-}
-
-int main()
-{
+int main() {
 	glfwInit();
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	GLFWwindow *window = glfwCreateWindow(screenWidth, screenHeight, "Test", nullptr, nullptr);
-	
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "Taiwancraft", nullptr, nullptr);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, cursorPosCallback);
-	glfwSetWindowSizeCallback(window, resizeEvent);
-
+	glfwSetCursorPosCallback(window, cursorCallback);
+	GLFWimage icon;
+	icon.pixels = stbi_load(ASSETS_DIR"icon.png", &icon.width, &icon.height, nullptr, 4);
+	glfwSetWindowIcon(window, 1, &icon);
+	stbi_image_free(icon.pixels);
 	glfwMakeContextCurrent(window);
 	gladLoadGL();
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-
-	Shader::loadShader("cube", ASSETS_DIR"shaders/cube.vert", ASSETS_DIR"shaders/cube.frag");
-	Drawable::addDrawable<Cube>("cube");
-	Texture2D::loadTexture("dirt", ASSETS_DIR"textures/dirt.png", GL_NEAREST);
-
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-	
+	const GLfloat vertices[] = {
+		-0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 
+		 0.0f,  0.5f, 0.0f, 1.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f, 0.0f, 1.0f
+	};
+	GLuint vao, vbo;
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, reinterpret_cast<void*>(sizeof(GLfloat) * 0));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 5, reinterpret_cast<void*>(sizeof(GLfloat) * 2));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	Shader shader(SHADERS_DIR"shader.vert", SHADERS_DIR"shader.frag");
 	while (!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		Time::update();
-
-		handleFrameEvent(window);
-
-		Texture2D::getTexture("dirt").bind(0);
-		Shader::getShader("cube").set("dirt", 0)
-								 .set("cameraMatrix", player.getCameraMatrix());
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		Shader::getShader("cube").bind();
-		for (int i = 0; i < 16; ++i) 
-			for (int j = 0; j < 10; ++j)
-				for (int k = 0; k < 16; ++k) {
-					glm::mat4 modelMatrix(1.0f);
-					modelMatrix = glm::translate(modelMatrix, glm::vec3(float(i), float(j), float(k)));
-					Shader::getShader("cube").set("modelMatrix", modelMatrix);
-					Drawable::getDrawable("cube").render();
-				}
-
+		glClear(GL_COLOR_BUFFER_BIT);
+		shader.use();
+		shader.set("viewMatrix", camera.getViewMatrix());
+		shader.set("projectionMatrix", camera.getProjectionMatrix());
+		glBindVertexArray(vao);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glfwSwapBuffers(window);
 	}
-	
 	glfwTerminate();
 	return 0;
 }
