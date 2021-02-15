@@ -70,8 +70,13 @@ public:
 
 	void use() const { glUseProgram(m_Id); }
 
-	void set(std::string name, glm::mat4 value) { 
+	Shader& set(std::string name, GLint value) { 
+		glProgramUniform1i(m_Id, glGetUniformLocation(m_Id, name.c_str()), value); 
+		return *this;
+	}
+	Shader& set(std::string name, glm::mat4 value) { 
 		glProgramUniformMatrix4fv(m_Id, glGetUniformLocation(m_Id, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+		return *this;
 	}
 };
 

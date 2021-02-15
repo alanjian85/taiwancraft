@@ -6,49 +6,40 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 class Camera {
-private:
-	glm::vec3 m_Position;
-	float m_Yaw, m_Pitch, m_Roll, m_Fov, m_Near, m_Far;
-	int m_ScreenWidth, m_ScreenHeight;
 public:
+	glm::vec3 position;
+	float yaw, pitch, roll, fov, near, far;
+	int screenWidth, screenHeight;
+
 	Camera(glm::vec3 position, float yaw, float pitch, float roll,
-		   float fov, int screenWidth, int screenHeight, float near, float far) :
-		   m_Position(position), m_Yaw(yaw), m_Pitch(pitch), m_Roll(roll), 
-		   m_Fov(fov), m_ScreenWidth(screenWidth), m_ScreenHeight(screenHeight),
-		   m_Near(near), m_Far(far) {}
-
-	glm::vec3 getPosition() const { return m_Position; }
-	float getYaw() const { return m_Yaw; }
-	float getPitch() const { return m_Pitch; }
-	float getRoll() const { return m_Roll; }
-	float getFov() const { return m_Fov; }
-	float getNear() const { return m_Near; }
-	float getFar() const { return m_Far; }
-
-	Camera& setPosition(glm::vec3 position) { m_Position = position; return *this; }
-	Camera& setYaw(float yaw) { m_Yaw = yaw; return *this; }
-	Camera& setPitch(float pitch) { m_Pitch = pitch; return *this; }
-	Camera& setRoll(float roll) { m_Roll = roll; return *this; }
-	Camera& setFov(float fov) { m_Fov = fov; return *this; }
-	Camera& setScreenWidth(int width) { m_ScreenWidth = width; return *this; }
-	Camera& setScreenHeight(int height) { m_ScreenHeight = height; return *this; }
-	Camera& setNear(float near) { m_Near = near; return *this; }
-	Camera& setFar(float far) { m_Far = far; return *this; }
+		   float fov, int screenWidth, int screenHeight, float near, float far) {
+		this->position = position;
+		this->yaw = yaw;
+		this->pitch = pitch;
+		this->roll = roll;
+		this->fov = fov;
+		this->near = near;
+		this->far = far;
+		this->screenWidth = screenWidth;
+		this->screenHeight = screenHeight;
+	}
 
 	glm::vec3 getDirection() const
 	{
 		glm::vec3 direction;
-		direction.x = glm::cos(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
-		direction.y = glm::sin(glm::radians(m_Pitch));
-		direction.z = glm::sin(glm::radians(m_Yaw)) * glm::cos(glm::radians(m_Pitch));
+		direction.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
+		direction.y = glm::sin(glm::radians(pitch));
+		direction.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 		return direction;
 	}
+	glm::vec3 getRightDir() const { return glm::normalize(glm::cross(getDirection(), getSpaceUp())); }
+	glm::vec3 getUpDir() const { return glm::normalize(glm::cross(getRightDir(), getDirection())); }
 
-	glm::vec3 getUpDir() const { return glm::vec3(-glm::sin(m_Roll), glm::cos(m_Roll), 0.0f); }
+	glm::vec3 getSpaceUp() const { return glm::vec3(-glm::sin(roll), glm::cos(roll), 0.0f); }
 
-	glm::mat4 getViewMatrix() const { return glm::lookAt(m_Position, m_Position + getDirection(), getUpDir()); }
+	glm::mat4 getViewMatrix() const { return glm::lookAt(position, position + getDirection(), getSpaceUp()); }
 	glm::mat4 getProjectionMatrix() const { 
-		return glm::perspective(m_Fov, float(m_ScreenWidth) / float(m_ScreenHeight), m_Near, m_Far);
+		return glm::perspective(fov, float(screenWidth) / float(screenHeight), near, far);
 	}
 };
 
